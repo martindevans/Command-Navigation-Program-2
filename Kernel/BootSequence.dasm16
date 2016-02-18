@@ -1,0 +1,34 @@
+; --------------------------------------------
+; Title:   BootSequence
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+set pc, BOOT_SEQUENCE_END
+dat "BootSequence"
+
+:BOOT_MESSAGE dat "Command Navigation Program. Starting. ", 0
+:BOOT_MESSAGE_INTERRUPT dat "Interrupt Handler Initialised. ", 0
+
+:BOOT_SEQUENCE_START
+
+:BOOT_SEQUENCE_MAP_TEMPORARY_DISPLAY		;Temporarily map display for boot sequence
+	jsr VERY_BASIC_DISPLAY_INITIALIZE
+
+	set push, BOOT_MESSAGE
+	jsr VERY_BASIC_DISPLAY_WRITE
+	
+:BOOT_SEQUENCE_BEGIN_INTERRUPT_MANAGER
+	jsr INTERRUPTS_SETUP_HANDLER
+	
+	set push, BOOT_MESSAGE_INTERRUPT
+	jsr VERY_BASIC_DISPLAY_WRITE
+	
+:BOOT_SEQUENCE_BEGIN_PROCESS_MANAGER	;Start Process Manager (this doesn't actually involve any work)
+
+:BOOT_SEQUENCE_UNMAP_TEMP_DISPLAY		;Unmap temporary display (this doesn't actually involve any work)
+
+set pc, pop								;Completed boot sequence
+
+:BOOT_SEQUENCE_END

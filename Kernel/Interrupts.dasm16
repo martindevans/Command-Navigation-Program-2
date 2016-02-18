@@ -1,0 +1,23 @@
+; --------------------------------------------
+; Title:   Interrupts
+; Author:  Martin
+; Date:    03/12/2012
+; Version: 
+; --------------------------------------------
+
+set pc, INTERRUPTS_END				;Jump over to prevent execution wandering in
+dat "Interrupts"
+
+:INTERRUPTS_SETUP_HANDLER
+	;ias INTERRUPT_HANDLER
+	;set [FUNCTION_RETURN_VALUES_COUNT], 0
+	;set [FUNCTION_ARGUMENTS_COUNT], 0
+	;set pc, ReturnFromFunction					;Clean up stack and return from function
+
+:INTERRUPT_HANDLER
+	set push, ex				;Push ex to stack in case we're in the middle of something that wants to use it
+	jsr a						;Jump to parameter of interrupt (which is required to be a handler)
+	set ex, pop					;Restore ex
+	rfi 0						;Exit interrupt handler, parameter has no meaning whatsoever!
+
+:INTERRUPTS_END

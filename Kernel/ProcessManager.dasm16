@@ -1,0 +1,281 @@
+; --------------------------------------------
+; Title:   ProcessManager
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+set pc, PROCESS_MANAGER_END
+dat "ProcessManager"
+
+;tables of processes all process.
+;This implies a maximum of 128 processes, which is an absurdly *high* limit considering the memory limitations
+:PROCESS_TABLE
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+dat 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+
+#define PROCESS_TABLE_SIZE 128
+
+#define PROCESS_STATE_NONE 0
+#define PROCESS_STATE_CREATED 1
+#define PROCESS_STATE_RUNNING 2
+#define PROCESS_STATE_JOINED 3
+#define PROCESS_STATE_DEAD 4
+
+#define SIZEOF_PROCESS_DESCRIPTOR 3
+#define PROCESS_DESCRIPTOR_STATE 1
+#define PROCESS_DESCRIPTOR_JOINED 2
+#define PROCESS_DESCRIPTOR_MEMORY_HANDLE 3
+
+#define PROCESS_SP_OFFSET 0						;Offset from top of stack to the stack pointer
+#define PROCESS_TERMINATION_EVENT_PC_OFFSET 1	;Offset from top of stack to the termination event PC
+#define PROCESS_OUTPUT_EVENT_PC_OFFSET 2		;Offset from top of stack to the output event PC
+#define PROCESS_FIRST_PC_OFFSET 3				;Offset from top of stack to the pointer to the first instruction of the process
+
+;Process Descriptor (PID is a pointer to the start of the process descriptor for the process)
+; - Parent Process Id
+; - State (#defined above)
+; - PID of joined process (If this process is joined to something)
+; - Pointer to memory handle
+
+:PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS
+dat 0x0000
+
+;Start a new process as a child of the currently running process
+;pc
+; - Pointer to first instruction of new process
+;outputPc
+; - subroutine to jump to when output buffer is written to (must take 3 arguments, the pid of writer, pointer to the data and the length of the data), may be null (0x0000)
+;terminationPc
+; - subroutine to jump to when process is terminated (must take 1 argument, the pid of dying process), may be null (0x0000)
+;ARGUMENTS(pc, outputData, outputPc, terminationPc)
+;RETURN(processId)
+:StartProcess
+	set push, i		;Save i
+	set push, j		;Save j
+
+	;Allocate a descriptor for this process
+	set i, 0									;Start of search loop
+	:StartProcess_FindEmptyProcessDescriptor
+		ife [i + PROCESS_TABLE + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_NONE	;Is this descriptor empty?
+			set pc, StartProcess_FoundFreeDescriptor							;Yes, use it
+
+		add i, 1																;Increment loop counter
+	
+		ifn i, PROCESS_TABLE_SIZE												;End of search?
+			set pc, StartProcess_FindEmptyProcessDescriptor						;No, loop back
+		set push, 0																;Return null
+		set pc, StartProcess_EXIT												;Exit
+			
+	:StartProcess_FoundFreeDescriptor
+	add i, PROCESS_TABLE							;Set i to point at empty descriptor
+	set [i], [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS]	;Set parent to current active process
+	set [i + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_CREATED	;Set state to created
+	
+	jsr MEMORY_ALLOCATOR_ALLOCATE					;Allocate a new memory handle
+	set [i + PROCESS_DESCRIPTOR_MEMORY_HANDLE], pop	;Set memory handle into process descriptor
+	
+	set push, i										;Return ID of new process
+	
+	add i, [PROCESS_DESCRIPTOR_MEMORY_HANDLE]		;Set i to memory point to handle
+	set j, [i + MEMORY_ALLOCATOR_PAGE_SIZE]			;Set j to 1 beyond end of stack (this memory was just allocated, so it's guaranteed to be in memory)
+	sub j, 1										;Set j to end of stack
+	set [j + PROCESS_SP_OFFSET], 0xFFFD				;set SP to point 3 into the stack
+	set [j + PROCESS_TERMINATION_EVENT_PC_OFFSET], [sp + 6]	;set termination event onto stack
+	set [j + PROCESS_OUTPUT_EVENT_PC_OFFSET], [sp + 5]		;set output event onto stack
+	set [j + PROCESS_FIRST_PC_OFFSET], [sp + 4]		;set first instruction of new process to be under fake stack pointer
+
+	:StartProcess_EXIT
+	set [FUNCTION_RETURN_VALUES_COUNT], 1
+	set [FUNCTION_ARGUMENTS_COUNT], 5					;includes the 2 saved registers
+	set pc, ReturnFromFunction							;Clean up stack and return from function
+
+;Immediately terminate the current process
+:EndProcess
+	ife [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS], 0			;If no process is running then early exit (should log some kind of error here)
+		set pc, EndProcess_EXIT
+	
+	set [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_DEAD	;Set state to dead
+	
+	set a, [a]												;Set A to pid of parent
+	ife a, 0												;check if there is no parent
+		set pc, EndProcess_EXIT
+	ife [a + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_JOINED						;Check if parent is joined
+		ife [a + PROCESS_DESCRIPTOR_JOINED], PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS	;Check if parent is joined on this process
+			set [a + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_RUNNING				;Set parent state back to running
+	
+	set a, [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS]			;set A to active process
+	set a, [a + PROCESS_DESCRIPTOR_MEMORY_HANDLE]			;set A to pointer to memory handle, no need to load handle since this is the active process
+	set b, [a]												;set b to point to start of memory space
+	add b, [a + MEMORY_ALLOCATOR_PAGE_SIZE]							;set b to point 1 beyond end of stack
+	sub b, (1 + PROCESS_TERMINATION_EVENT_PC_OFFSET)		;set b to point to termination process pc
+	ife [b], 0
+		set pc, EndProcess_SkipTerminationEvent				;skip termination event if it is null
+	set push, [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS]
+	jsr [b]													;trigger termination event
+	:EndProcess_SkipTerminationEvent
+	
+	jsr PROCESS_MANAGER_TRY_DEALLOCATE_PROCESS				;Try to deallocate, this will be tried every time a dead process gets a timeslice until it succeeds
+	
+	set [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS], 0x0000	;Set current process to none
+	
+	:EndProcess_EXIT
+	set pc, Yield											;yield back to task scheduler
+
+;Joins the current process to the specified process
+;Join function will block until other process is complete
+;ARGUMENTS(pid)
+;RETURN(errorcode)
+;CLOBBER(A)
+;errors:
+;0 = success
+;1 = Already joined
+;2 = Trying to join to a non child process
+;3 = No active process
+:JoinProcess
+	ifn [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS], 0		;If no process is running then early exit (could realistically panic here)
+		set pc, JoinProcess_PidNotNull
+		
+	set push, 3											;error code 3, no current process
+	set pc, JoinProcess_EXIT
+		
+	:JoinProcess_PidNotNull
+	set a, [sp + 1]										;Set a to address of child process
+	ife [a], [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS]	;Checks that current process is parent of child process
+		set pc, JoinProcess_ProcessIsParent
+		
+	set push, 2											;error code 2, current process is not parent
+	set pc, JoinProcess_EXIT
+		
+	:JoinProcess_ProcessIsParent
+	ifn [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS + 1], PROCESS_STATE_JOINED	;Check current process is not already joined to something
+		set pc, JoinProcess_CurrentNotAlreadyJoined
+		
+	set push, 1											;error code 1, current process already joined
+	set pc, JoinProcess_EXIT
+	
+	:JoinProcess_CurrentNotAlreadyJoined
+	
+	set [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_JOINED	;Set current process into joined state
+	
+	jsr Yield									;yield to task scheduler immediately
+	
+	set push, 0									;success code
+	
+	:JoinProcess_EXIT
+	set [FUNCTION_RETURN_VALUES_COUNT], 1
+	set [FUNCTION_ARGUMENTS_COUNT], 1
+	set pc, ReturnFromFunction					;Clean up stack and return from function
+
+;Sets the parent of a process to none
+;An orphaned process will terminate and deallocate immediately upon completion
+;ARGUMENTS(pid)
+;RETURN(errorcode)
+;errors:
+;0 = success
+;1 = Current process not parent of pid
+:DisownProcess
+	ife [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS], [sp + 1]	;Check that current process is parent of pid
+		set pc, DisownProcess_CurrentIsParent
+	
+	set push, 1
+	set pc, DisownProcess_EXIT
+	
+	:DisownProcess_CurrentIsParent
+	set [sp + 1], 0								;Set parent to none
+	set push, 0									;Success code
+	
+	:DisownProcess_EXIT
+	set [FUNCTION_RETURN_VALUES_COUNT], 1
+	set [FUNCTION_ARGUMENTS_COUNT], 1
+	set pc, ReturnFromFunction					;Clean up stack and return from function
+
+;Deallocates the current process if no valid references to it are being held
+;CLOBBER(A, B)
+:PROCESS_MANAGER_TRY_DEALLOCATE_PROCESS
+	set a, PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS			;Set A to current process
+
+	ifn [a + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_DEAD
+		set pc, PROCESS_MANAGER_TRY_DEALLOCATE_PROCESS_EXIT	;Process isn't dead! Stop trying to clean it up
+	
+	set b, [a]												;set B to parent
+	ife  b, 0x0000											;is parent none
+		set pc, PROCESS_MANAGER_TRY_DEALLOCATE_ACTUALLY_DEALLOCATE	;Parent is none, go ahead and deallocate
+		
+	ife [b + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_DEAD	;is parent state dead
+		set pc, PROCESS_MANAGER_TRY_DEALLOCATE_ACTUALLY_DEALLOCATE	;Parent is dead, go ahead and deallocate
+	
+	set pc, PROCESS_MANAGER_TRY_DEALLOCATE_PROCESS_EXIT		;Fallen through to this case, so don't deallocate process
+	
+	:PROCESS_MANAGER_TRY_DEALLOCATE_ACTUALLY_DEALLOCATE
+		set push, [a + PROCESS_DESCRIPTOR_MEMORY_HANDLE]
+		jsr MEMORY_ALLOCATOR_FREE							;Free memory handle
+
+		set [a + PROCESS_DESCRIPTOR_STATE], PROCESS_STATE_NONE	;Deallocate descriptor (set state to none)
+	
+	:PROCESS_MANAGER_TRY_DEALLOCATE_PROCESS_EXIT
+	set pc, pop
+
+;Output some data from this process back to parent
+;ARGUMENTS(pointerToData, lengthOfData)
+;CLOBBER(a)
+:ProcessOutput
+	set a, [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS]	;set A to current process
+	add a, PROCESS_DESCRIPTOR_MEMORY_HANDLE			;set A to memory handle pointer
+	set push, a										;push memory handle onto stack
+	jsr MEMORY_ALLOCATOR_LOAD						;ensure memory handle is loaded into memory
+	
+	set a, [a + MEMORY_ALLOCATOR_PAGE_SIZE]			;set A to point 1 beyond end of stack
+	sub a, 1										;set A to point to end of stack
+	sub a, PROCESS_OUTPUT_EVENT_PC_OFFSET			;set A to point at PC for output event
+	
+	ife [a], 0										;Check if output event is 0
+		set pc, ProcessOutput_EXIT
+		
+	set push, [sp + 2]								;push data length onto stack
+	set push, [sp + 1]								;push data pointer onto stack
+	set push, [PROCESS_MANAGER_CURRENT_ACTIVE_PROCESS]	;push pid onto stack
+	jsr [a]											;Jump to output handler
+		
+	:ProcessOutput_EXIT
+	set [FUNCTION_RETURN_VALUES_COUNT], 2
+	set [FUNCTION_ARGUMENTS_COUNT], 0
+	set pc, ReturnFromFunction					;Clean up stack and return from function
+
+;Voluntarily returns control to the task scheduler
+;If called as a subroutine by a running process then yield will save context and resume at some later time
+;If simply jumped to when no process is executing then yield won't bother saving any context (and will never return)
+:Yield
+	set pc, PANIC
+
+:PROCESS_MANAGER_END

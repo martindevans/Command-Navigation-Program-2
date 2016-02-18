@@ -1,0 +1,44 @@
+; --------------------------------------------
+; Title:   HardwareManager
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+set pc, HARDWARE_MANAGER_END				;Jump over hardware manager to prevent execution wandering into it
+dat "HardwareManager"
+
+;Search connected hardware devices for one with the given ID
+;ARGUMENTS(ID-A, ID-B)
+;RETURN(hardware index + 1 (0 indicates not found))
+;CLOBBER(A, B, C, X, Y, I)
+:LocateHardwareDeviceIndex
+	hwn i									;i = Number of hardware devices
+	
+	:LocateHardwareDeviceIndex_SearchLoop
+		ife i, 0							;No more connected devices, return failure
+			set pc, LocateHardwareDeviceIndex_ReturnFailure
+	
+		sub i, 1							;decrement loop counter
+	
+		hwq i								;Query hardware at index i
+		ife a, [sp + 1]
+			ife b, [sp + 2]
+				set pc, LocateHardwareDeviceIndex_ReturnSuccess
+	
+		set pc, LocateHardwareDeviceIndex_SearchLoop
+	
+	:LocateHardwareDeviceIndex_ReturnSuccess
+		add i, 1
+		set push, i							;Found, return index + 1
+		set pc, LocateHardwareDeviceIndex_Return
+	
+	:LocateHardwareDeviceIndex_ReturnFailure
+		set push, 0							;Not found, return 0
+	
+	:LocateHardwareDeviceIndex_Return
+	set [FUNCTION_RETURN_VALUES_COUNT], 1
+	set [FUNCTION_ARGUMENTS_COUNT], 2
+	set pc, ReturnFromFunction					;Clean up stack and return from function
+		
+:HARDWARE_MANAGER_END

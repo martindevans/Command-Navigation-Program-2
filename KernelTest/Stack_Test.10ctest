@@ -1,0 +1,123 @@
+; --------------------------------------------
+; Title:   Stack_Test
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+#segment code
+; ========================================================================
+; user unit test code function
+; ========================================================================
+:unit_test
+
+	;void func()
+	set push, StackTestReturn1
+	set [FUNCTION_RETURN_VALUES_COUNT], 0
+	set [FUNCTION_ARGUMENTS_COUNT], 0
+	set pc, ReturnFromFunction
+	set pc, .fail 							;This should be jumped over by the function return address pushed to the stack
+	:StackTestReturn1
+	ifn sp, 0x0000
+		set pc, .fail
+
+	;word func()
+	set push, StackTestReturn2
+	set push, 0xABCD						;Push return value
+	set [FUNCTION_RETURN_VALUES_COUNT], 1
+	set [FUNCTION_ARGUMENTS_COUNT], 0
+	set pc, ReturnFromFunction
+	set pc, .fail
+	:StackTestReturn2
+	set a, pop
+	ifn a, 0xABCD							;Assert return value
+		set pc, .fail
+	ifn sp, 0x0000
+		set pc, .fail
+
+	;word, word func()
+	set push, StackTestReturn3
+	set push, 0xDEAD						;Push return value
+	set push, 0xBEEF						;Push return value
+	set [FUNCTION_RETURN_VALUES_COUNT], 2
+	set [FUNCTION_ARGUMENTS_COUNT], 0
+	set pc, ReturnFromFunction
+	set pc, .fail
+	:StackTestReturn3
+	set a, pop
+	ifn a, 0xBEEF							;Assert return value
+		set pc, .fail
+	set a, pop
+	ifn a, 0xDEAD							;Assert return value
+		set pc, .fail
+	ifn sp, 0x0000
+		set pc, .fail
+
+	;word func(word)
+	set push, 0xAAAA						;push arg
+	set push, StackTestReturn4				;return address
+	set push, 0xBBBB							;return value
+	set [FUNCTION_RETURN_VALUES_COUNT], 1
+	set [FUNCTION_ARGUMENTS_COUNT], 1
+	set pc, ReturnFromFunction
+	set pc, fail
+	:StackTestReturn4
+	set a, pop
+	ifn a, 0xBBBB
+		set pc, .fail
+	ifn sp, 0x0000
+		set pc, .fail
+
+	set pc, .pass
+    ; enter unit test code here. you can jump to .pass or .fail
+    ; to signal success or failure
+    
+    ; unit tests will also fail after 1,000,000 cycles by default
+    
+    	
+.pass:
+    set a, UNIT_TEST_PASS
+    hwi [debugger_device]
+    
+.fail:
+	set a, UNIT_TEST_FAIL
+	hwi [debugger_device]
+
+.hang:
+    set pc, .hang
+
+; ========================================================================
+; unit test support code (debugger device interface)
+; ========================================================================
+#define NO_DEVICE 0xffff
+#define TRIGGER_BREAKPOINT 0
+#define OUTPUT_DIAG_WORD 1
+#define OUTPUT_DIAG_WORD_ZSTRING 2
+#define OUTPUT_DIAG_WORD_PSTRING 3
+#define UNIT_TEST_PASS 4
+#define UNIT_TEST_FAIL 5
+#define SET_PROCESSOR_SPEED 6
+#define GET_PROCESSOR_SPEED 7
+#define RESET_CYCLE_COUNTER 8
+#define GET_CYCLE_COUNTER 9
+
+#segment data
+:debugger_device
+    dat 0
+
+#segment boot
+    :detect_debugger
+        hwn z
+    .loop
+        sub z, 1
+        hwq z
+        ife b,0xdeb9
+            ife a,0x1111
+                set pc, .found
+        ifn z, 0
+            set pc, .loop
+    .notfound
+        set z, NO_DEVICE
+    .found
+        set [debugger_device], z
+        set pc, unit_test

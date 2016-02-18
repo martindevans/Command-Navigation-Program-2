@@ -1,0 +1,27 @@
+; --------------------------------------------
+; Title:   PANIC
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+set pc, PANIC
+:PANIC_MESSAGE
+dat "PANIC! ", 0
+
+:PANIC	
+	jsr VERY_BASIC_DISPLAY_INITIALIZE	;Setup a basic display
+	set [VERY_BASIC_DISPLAY_COLOR], 0xC000
+	
+	set a, 3							;Set display border
+	set b, 1							;Set it to blue (screen of death)
+	HWI i								;Trigger interrupt on screen
+	
+	IAS 0								;Disable interrupts
+	
+	:PANIC_LOOP
+		set push, PANIC_MESSAGE
+		jsr VERY_BASIC_DISPLAY_WRITE	;inform user something may be slightly wrong
+		set pc, PANIC_LOOP				;loop forever more
+
+:PANIC_END

@@ -1,0 +1,57 @@
+; --------------------------------------------
+; Title:   Stack
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+set pc, STACK_END				;Jump over to prevent execution wandering in
+dat "Stack"
+
+:FUNCTION_RETURN_VALUES_COUNT dat 0x0000
+:FUNCTION_ARGUMENTS_COUNT dat 0x0000
+
+:STACK_PRESERVE_RETURN_ADDRESS dat 0x0000
+:STACK_PRESERVE_Z dat 0x0000
+:STACK_PRESERVE_I dat 0x0000
+:STACK_PRESERVE_J dat 0x0000
+
+;Clean up a stack frame and return
+;with a stack laid out like this:
+; Return value, Return Value, Return Value etc etc
+; Return Address
+; Argument, Argument, Argument etc
+;
+;This will remove All arguments and the return address, leaving just the return values on the stack
+
+:ReturnFromFunction
+	set [STACK_PRESERVE_Z], z	;save z
+	set [STACK_PRESERVE_I], i	;Save i
+	set [STACK_PRESERVE_J], j	;Save j
+	
+	set i, [FUNCTION_RETURN_VALUES_COUNT]
+	add sp, i								;Set stack pointer to point at return address
+	set [STACK_PRESERVE_RETURN_ADDRESS], [sp]	;Save return address
+
+	set j, [FUNCTION_ARGUMENTS_COUNT]
+	add sp, j								;Set stack pointer to point to location to write return values to
+	add sp, 1
+
+	add j, 2								;J is now offset from sp to argument
+
+	:ReturnFromFunction_CopyReturnValuesLoop
+	ife i, 0
+		set pc, ReturnFromFunction_Return
+	set z, sp
+	sub z, j								;calculate location of return value to copy
+	set push, [z]							;copy return value up stack
+	sub i, 1								;decrement loop counter
+	set pc, ReturnFromFunction_CopyReturnValuesLoop
+	
+	:ReturnFromFunction_Return
+	set z, [STACK_PRESERVE_Z]				;restore z
+	set i, [STACK_PRESERVE_I]				;restore i
+	set j, [STACK_PRESERVE_J]				;restore j
+	set pc, [STACK_PRESERVE_RETURN_ADDRESS]
+	
+:STACK_END

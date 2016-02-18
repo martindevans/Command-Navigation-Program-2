@@ -1,0 +1,51 @@
+; --------------------------------------------
+; Title:   Main
+; Author:  Martin
+; Date:    30/11/2012
+; Version: 
+; --------------------------------------------
+
+jsr BOOT_SEQUENCE_START
+
+;Launch shell
+set push, TEST			;Process is test
+set push, 0				;ignore output
+set push, 0				;ignore termination
+jsr StartProcess
+
+set pc, PANIC
+
+:TEST_MESSAGE
+dat 0, 0
+
+:TEST	
+	jsr VERY_BASIC_DISPLAY_INITIALIZE	;Setup a basic display
+	set [VERY_BASIC_DISPLAY_COLOR], 0xC000
+	
+	set a, 3							;Set display border
+	set b, 1							;Set it to blue (screen of death)
+	HWI i								;Trigger interrupt on screen
+	
+	set push, 0x30cf
+	set push, 0x7406
+	jsr LocateHardwareDeviceIndex
+	set i, pop
+	ife i, 0								;No keyboard found, panic
+		set pc, panic
+	sub i, 1
+	
+	:TEST_LOOP
+		set a, 0
+		hwi i
+		
+		ife c, 0
+			set pc, TEST_LOOP
+		
+		set [TEST_MESSAGE], c
+		set push, TEST_MESSAGE
+		jsr VERY_BASIC_DISPLAY_WRITE	;inform user something may be slightly wrong
+		set pc, TEST_LOOP				;loop forever more
+		
+		
+		
+		
